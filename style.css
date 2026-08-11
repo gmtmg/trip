@@ -184,6 +184,18 @@ a { color: inherit; }
 
 .hero__type { position: relative; z-index: 2; text-align: center; width: 100%; }
 
+/* 画像が届く前は、枠線と alt テキストだけが先に描画されてしまう
+   （丸い写真の黒フチが輪っかだけ見える状態）。
+   読み込みが終わるまで伏せておき、揃ってから出す。
+   .js が付くのは head のスクリプトが動いたときだけなので、
+   JS無効の環境ではこの指定自体が効かず、従来どおり表示される */
+.js .hero__mark,
+.js .hero__photos,
+.js .hero__says { opacity: 0; }
+
+.js .hero.is-ready .hero__mark,
+.js .hero.is-ready .hero__says { opacity: 1; transition: opacity .5s ease; }
+
 .hero__mark {
   width: clamp(58px, 9vw, 104px); height: auto;
   margin: 0 auto .9rem;
@@ -252,6 +264,14 @@ a { color: inherit; }
   margin-right: calc(-1 * (var(--rail-w) + var(--pad)));
   aspect-ratio: 1 / 0.98;
   animation: rise 1s cubic-bezier(.2, .9, .3, 1) .3s both;
+}
+/* JS有効時は、読み込み完了を合図に出す（上の遅延指定は使わない）。
+   opacity を明示しておくのは保険。アニメーションが動かない環境でも
+   写真が消えたままにならないようにする */
+.js .hero__photos { animation: none; }
+.js .hero.is-ready .hero__photos {
+  opacity: 1;
+  animation: rise .9s cubic-bezier(.2, .9, .3, 1) both;
 }
 
 .hp { position: absolute; margin: 0; }

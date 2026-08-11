@@ -9,6 +9,43 @@
 
   var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* ヒーローの画像が揃ってから出す。
+     揃う前に出すと、丸い写真の黒フチや alt テキストだけが
+     宙に浮いて見えてしまう（style.css の .js .hero__photos を参照） */
+  (function revealHeroWhenLoaded() {
+    var hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    var imgs = Array.prototype.slice.call(hero.querySelectorAll('img'));
+    var waiting = imgs.length;
+    var shown = false;
+
+    function show() {
+      if (shown) return;
+      shown = true;
+      hero.classList.add('is-ready');
+    }
+
+    function oneDone() {
+      waiting -= 1;
+      if (waiting <= 0) show();
+    }
+
+    if (!waiting) { show(); return; }
+
+    imgs.forEach(function (img) {
+      if (img.complete) {
+        oneDone();
+      } else {
+        img.addEventListener('load', oneDone);
+        img.addEventListener('error', oneDone);   // 失敗しても止めない
+      }
+    });
+
+    /* 通信が詰まっても、いつまでも真っ黄色のままにはしない */
+    window.setTimeout(show, 2500);
+  })();
+
   var topbar = document.getElementById('topbar');
   var track  = document.querySelector('.sweep__track');
   var stage  = document.querySelector('.sweep__stage');

@@ -24,6 +24,11 @@
 <link rel="preload" as="image" href="assets/web/tacos-red.webp">
 <link rel="preload" as="image" href="assets/web/nachos.webp">
 <link rel="stylesheet" href="style.css">
+
+<!-- JSが動く環境だけヒーロー写真を読み込み完了まで隠す。
+     head で先に付けておかないと、隠す前に一瞬見えてしまう。
+     JSが無効なら付かないので、その場合は従来どおり表示される -->
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
