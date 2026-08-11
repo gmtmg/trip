@@ -71,6 +71,9 @@
 
     stage.style.setProperty('--p', smoothstep(raw).toFixed(4));
     stage.style.setProperty('--pi', smoothstep(info).toFixed(4));
+
+    /* 情報パネルが十分出てからリンクを押せるようにする */
+    stage.classList.toggle('is-revealed', info > 0.5);
   }
 
   function onScroll() {
