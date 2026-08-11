@@ -1,0 +1,10 @@
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# 元画像はリポジトリに含めない（サイト表示に必要なのは assets/web/ のみ）。
+# tools/build-images.sh を再実行する場合は、元画像を assets/ に戻すこと。
+# ※ assets/web/ 配下は対象外（* は / をまたがないため）
+/assets/*.png
+/assets/*.jpg
+/assets/*.jpeg

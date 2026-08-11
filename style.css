@@ -1,0 +1,718 @@
+@charset "utf-8";
+
+/* ============================================================
+   TRIP Tacos
+   色は assets のロゴ／既存グラフィックから抽出した実測値
+   ============================================================ */
+
+:root {
+  --red:        #DE2A24;
+  --red-deep:   #CA211A;
+  --red-shade:  #8E1710;
+  --yellow:     #EDE631;
+  --yellow-warm:#F5CB19;
+  --orange:     #FB3A0C;
+  --ink:        #140D0A;
+  --cream:      #F7F1E3;
+
+  --font-display: "Bagel Fat One", "Zen Kaku Gothic New", system-ui, sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+
+  --pad: clamp(1.25rem, 5vw, 4rem);
+  --sweep-unit: 1vw;   /* 料理写真が捌ける距離の単位。モバイルで拡大する */
+  --rail-w: clamp(48px, 5vw, 76px);   /* 右端の縦型メニューの幅 */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding-right: var(--rail-w);   /* 右端の縦メニューぶんを空ける */
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 500;
+  line-height: 1.9;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 999;
+  background: var(--yellow); color: var(--ink);
+  padding: .75rem 1.25rem; font-weight: 700; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+:where(a, button):focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.ig-glyph { width: 1.25em; height: 1.25em; fill: currentColor; flex: none; }
+
+.sec-head {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+  line-height: 1;
+  margin: 0 0 1.2rem;
+  color: var(--red);
+  letter-spacing: .02em;
+}
+.sec-head--light { color: var(--yellow); }
+
+
+/* ============================================================
+   ヘッダー
+   ============================================================ */
+.topbar {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  /* position:fixed は body の padding を受けないので自前で避ける */
+  padding: .7rem calc(var(--pad) + var(--rail-w)) .7rem var(--pad);
+  transition: background-color .3s ease, backdrop-filter .3s ease;
+}
+
+
+/* ============================================================
+   右端の縦型セクションメニュー
+   ============================================================ */
+.rail {
+  position: fixed; top: 0; right: 0; z-index: 60;
+  width: var(--rail-w);
+  height: 100vh; height: 100svh;
+  background: var(--ink);
+  border-left: 3px solid var(--red);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.rail__list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(1.1rem, 2.6vh, 2rem);
+}
+
+.rail__list a {
+  /* 縦組み。ラテン文字は90度回って上から下に読める */
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-display);
+  font-size: clamp(.62rem, 1.5vh, .78rem);
+  letter-spacing: .22em;
+  line-height: 1;
+  text-decoration: none;
+  color: rgba(247, 241, 227, .55);
+  padding: .35em .2em;
+  transition: color .2s ease;
+}
+.rail__list a:hover { color: var(--yellow); }
+
+/* 現在地。左に黄色の線を出す */
+.rail__list a.is-current {
+  color: var(--yellow);
+  position: relative;
+}
+.rail__list a.is-current::before {
+  content: ""; position: absolute;
+  left: -.45em; top: 0; bottom: 0;
+  width: 3px; border-radius: 3px;
+  background: var(--yellow);
+}
+
+/* スクロール位置の目印。表示はしない */
+.sweep__anchor {
+  position: absolute; top: 67%; left: 0;
+  width: 1px; height: 1px;
+}
+.topbar.is-stuck {
+  background: rgba(20, 13, 10, .88);
+  backdrop-filter: blur(10px);
+}
+
+.topbar__home { display: block; line-height: 0; }
+.topbar__home img {
+  width: clamp(38px, 6vw, 46px); height: auto;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  transition: transform .3s ease;
+}
+.topbar.is-stuck .topbar__home img { border-color: var(--yellow); }
+.topbar__home:hover img { transform: rotate(-8deg) scale(1.06); }
+
+.topbar__ig {
+  display: inline-flex; align-items: center; gap: .5em;
+  font-family: var(--font-display);
+  font-size: clamp(.78rem, 2.4vw, .95rem);
+  text-decoration: none;
+  padding: .45em 1.1em;
+  border-radius: 999px;
+  background: var(--ink); color: var(--yellow);
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+.topbar__ig:hover { background: var(--yellow); color: var(--ink); transform: translateY(-2px); }
+.topbar.is-stuck .topbar__ig { background: var(--yellow); color: var(--ink); }
+.topbar.is-stuck .topbar__ig:hover { background: var(--red); color: var(--yellow); }
+
+
+/* ============================================================
+   1. ファーストビュー
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--yellow);
+  display: grid;
+  grid-template-rows: auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(1.25rem, 4vh, 2.5rem);
+  padding: clamp(4.5rem, 11vh, 7rem) var(--pad) clamp(2.5rem, 6vh, 4rem);
+  overflow: hidden;
+}
+
+.hero__type { position: relative; z-index: 2; text-align: center; width: 100%; }
+
+.hero__mark {
+  width: clamp(58px, 9vw, 104px); height: auto;
+  margin: 0 auto .9rem;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  animation: bob 5s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%      { transform: translateY(-9px) rotate(5deg); }
+}
+
+.hero__kicker {
+  margin: 0 0 .5rem;
+  font-weight: 900;
+  font-size: clamp(.72rem, 2.6vw, 1rem);
+  letter-spacing: .22em;
+  color: var(--ink);
+}
+.hero__kicker i { font-style: normal; color: var(--red); margin: 0 .3em; }
+
+.hero__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 15vw, 7rem);
+  line-height: .82;
+  letter-spacing: .005em;
+  color: var(--red);
+  text-shadow:
+     .055em .055em 0 var(--ink),
+    -.006em -.006em 0 var(--ink),
+     .012em 0 0 var(--ink);
+}
+.hero__word {
+  display: block;
+  animation: pop .75s cubic-bezier(.2, 1.25, .4, 1) both;
+  animation-delay: calc(var(--i) * .11s + .05s);
+}
+@keyframes pop {
+  from { opacity: 0; transform: translateY(.22em) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hero__place {
+  margin: 1rem 0 0;
+  font-weight: 700;
+  font-size: clamp(.72rem, 2.4vw, 1.05rem);
+  letter-spacing: .08em;
+  text-wrap: balance;   /* 折り返すときは2行を均等に */
+  color: var(--ink);
+}
+.hero__place i { font-style: normal; color: var(--red); margin: 0 .45em; }
+
+/* 料理写真3点のかたまり。タコス2点で挟んでナチョスを添え、
+   ひと目で「タコス屋」と分かるようにする。
+   位置はすべて % なので、箱ごと拡大縮小すれば構図は崩れない */
+.hero__photos {
+  position: relative; z-index: 1;
+  width: 100%;
+  max-width: min(100%, 52svh);
+  /* 盛り合わせの右端は元画像の時点で見切れている。
+     レールぶん右へ出し、.hero の overflow:hidden でちょうど
+     縦メニューの際で切り落として、見切れを目立たなくする */
+  justify-self: end;
+  margin-right: calc(-1 * (var(--rail-w) + var(--pad)));
+  aspect-ratio: 1 / 0.98;
+  animation: rise 1s cubic-bezier(.2, .9, .3, 1) .3s both;
+}
+
+.hp { position: absolute; margin: 0; }
+.hp img {
+  width: 100%; height: auto;
+  filter: drop-shadow(0 14px 26px rgba(20, 13, 10, .34));
+}
+
+.hp--sub    { left:  0;   top:    0; width: 43%; z-index: 2; transform: rotate(-9deg); }
+/* right の余白は、クラスタ右端がレールの下に潜るぶんを見込んでいる。
+   ここを詰めるとナチョスがレールに欠かれる */
+.hp--nachos { right: 17%; top:  13%; width: 31%; z-index: 1; transform: rotate(8deg); }
+.hp--main   { left:  4%;  bottom: 0; width: 92%; z-index: 3; transform: rotate(-2deg); }
+
+/* 中央の盛り合わせは背景が抜けた切り抜き画像なのでそのまま置く。
+   残り2点は四角い写真なので、丸く抜いて「皿」として見せ、
+   切り抜き1点 + 皿2点という組み方に揃える */
+.hp--sub img,
+.hp--nachos img {
+  aspect-ratio: 1;
+  object-fit: cover; object-position: center;
+  border-radius: 50%;
+  border: 5px solid var(--ink);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14%); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* サボテンのひとこと。PCでは出さない（下のメディアクエリで表示） */
+.hero__says { display: none; }
+
+.hero__cactus {
+  width: clamp(46px, 14vw, 72px);
+  height: auto;
+  flex: none;
+  transform: rotate(-5deg);
+}
+
+.hero__bubble {
+  position: relative;
+  margin: 0 0 .9rem;
+  padding: .5em .85em .55em;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: "Caveat", var(--font-body);
+  font-weight: 600;
+  font-size: clamp(.95rem, 4.4vw, 1.2rem);
+  line-height: 1.2;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  transform: rotate(-2deg);
+}
+/* サボテンの方へ向くしっぽ */
+.hero__bubble::after {
+  content: "";
+  position: absolute; left: -6px; bottom: 7px;
+  border: 6px solid transparent;
+  border-right-color: var(--ink);
+  border-left: 0;
+}
+
+.hero__scroll {
+  position: absolute; z-index: 3;
+  left: 50%; bottom: 1.1rem; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  font-family: var(--font-display);
+  font-size: .68rem; letter-spacing: .2em;
+  color: var(--ink); text-decoration: none;
+  mix-blend-mode: multiply;
+}
+.hero__scroll svg { width: 11px; height: 24px; animation: nudge 1.7s ease-in-out infinite; }
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); opacity: .5; }
+  50%      { transform: translateY(5px); opacity: 1; }
+}
+
+
+/* ============================================================
+   流れる帯
+   ============================================================ */
+.marquee {
+  background: var(--ink);
+  overflow: hidden;
+  padding: .5em 0;
+  border-block: 4px solid var(--red);
+}
+.marquee__row { display: flex; width: max-content; animation: slide 26s linear infinite; }
+.marquee__set {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4.2vw, 2.4rem);
+  line-height: 1.3;
+  color: var(--yellow);
+  white-space: nowrap;
+  padding-right: .5em;
+}
+.marquee__set i { font-style: normal; color: var(--red); margin: 0 .15em; }
+@keyframes slide { to { transform: translateX(-33.3333%); } }
+
+
+/* ============================================================
+   2. PHOTO → 店内 + INFO（スクロールで左右に捌ける）
+   ============================================================ */
+/* stage と同じ svh 基準にしておく。iOS でアドレスバーが伸縮しても
+   進捗の分母が変わらず、写真が飛ばない */
+.sweep__track { position: relative; height: 340vh; height: 340svh; }
+
+.sweep__stage {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* --- 奥のレイヤー：店内写真 + 店舗情報 --- */
+.reveal { position: absolute; inset: 0; }
+
+.reveal__bg { position: absolute; inset: 0; }
+.reveal__bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(calc(1.22 - var(--p, 0) * .22));
+  opacity: calc(.2 + var(--p, 0) * .8);
+}
+.reveal__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(20,13,10,.45) 0%, rgba(20,13,10,.9) 72%);
+}
+
+.reveal__panel {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: .35rem;
+  padding: 5rem var(--pad) 3rem;
+  text-align: center;
+  opacity: var(--pi, 0);
+  transform: translateY(calc((1 - var(--pi, 0)) * 26px));
+}
+/* 店内写真の上でも情報が読めるように、文字の下だけ暗く落とす */
+.reveal__panel::before {
+  content: ""; position: absolute;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(820px, 108%); height: min(660px, 104%);
+  background: radial-gradient(ellipse at center,
+    rgba(20,13,10,.92) 0%,
+    rgba(20,13,10,.82) 42%,
+    rgba(20,13,10,.45) 68%,
+    rgba(20,13,10,0) 85%);
+  pointer-events: none;
+}
+.reveal__panel > * { position: relative; z-index: 1; }
+.reveal__head {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+  line-height: 1; margin: 0 0 1.1rem;
+  color: var(--yellow);
+}
+
+.info { margin: 0 0 1.7rem; display: grid; gap: .8rem; }
+.info__row { display: grid; gap: .1rem; }
+.info dt {
+  font-family: var(--font-display);
+  font-size: .72rem; letter-spacing: .18em;
+  color: var(--orange);
+}
+.info dd {
+  margin: 0;
+  max-width: 30ch;
+  margin-inline: auto;
+  font-size: clamp(.9rem, 2.6vw, 1.05rem);
+  line-height: 1.7;
+  font-weight: 700;
+}
+.info a { color: var(--cream); }
+.info__map {
+  display: block; width: fit-content;
+  margin: .45rem auto 0;
+  font-size: .8rem; letter-spacing: .08em;
+  color: var(--yellow);
+  text-underline-offset: 4px;
+}
+
+.reveal__ig {
+  display: inline-flex; align-items: center; gap: .45em;
+  margin-top: 1.1rem;
+  font-family: var(--font-display);
+  font-size: .9rem;
+  color: var(--yellow);
+  text-decoration: none;
+  opacity: .9;
+}
+.reveal__ig:hover { opacity: 1; text-decoration: underline; text-underline-offset: 5px; }
+
+/* --- 手前のレイヤー：料理写真 --- */
+.food { position: absolute; inset: 0; }
+
+.food__item {
+  position: absolute; margin: 0;
+  transform:
+    translate3d(calc(var(--p, 0) * var(--x, 0) * var(--sweep-unit)), 0, 0)
+    rotate(calc((var(--r0, 0) + var(--p, 0) * var(--r, 0)) * 1deg));
+  will-change: transform;
+}
+.food__item img {
+  width: 100%;
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, .55));
+}
+
+/* 画面をほぼ埋めるように重ねる。隙間が多いと「捌けた瞬間」が弱くなる */
+.food--l1 { left: -5%;  top: -5%; width: 36%; --r0: -5; }
+.food--l2 { left: -3%;  top: 45%; width: 33%; --r0:  4; }
+.food--l3 { left: 23%;  top:  2%; width: 35%; --r0: -3; }
+.food--r1 { right: -5%; top: -3%; width: 37%; --r0:  5; }
+.food--r2 { right: -3%; top: 48%; width: 34%; --r0: -4; }
+.food--r3 { right: 20%; top: 24%; width: 34%; --r0:  3; }
+
+
+/* ============================================================
+   4. ABOUT
+   ============================================================ */
+.about {
+  position: relative;
+  background: var(--yellow);
+  color: var(--ink);
+  padding: clamp(4rem, 12vh, 8rem) var(--pad);
+  overflow: hidden;
+}
+.about__inner {
+  position: relative; z-index: 2;
+  max-width: 1000px; margin: 0 auto;
+  display: grid; gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  align-items: center;
+}
+
+.about__bubble svg { width: 100%; height: auto; overflow: visible; }
+.bubble__body, .bubble__tail { fill: var(--red); }
+.bubble__line { fill: none; stroke: var(--yellow); stroke-width: 5; stroke-linejoin: round; }
+.bubble__text {
+  font-family: var(--font-display);
+  font-size: 42px;
+  fill: var(--yellow);
+}
+
+.about__body p { margin: 0 0 1.1rem; font-size: clamp(.92rem, 2.5vw, 1.02rem); }
+.about__body p:last-child { margin-bottom: 0; }
+.about__sign {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 3vw, 1.35rem);
+  line-height: 1.4;
+  color: var(--red);
+  margin-top: 1.8rem !important;
+}
+
+/* 本文の右外側の余白に、下からのぞかせる。
+   .about__inner が max-width で中央寄せなので、広い画面では
+   右に必ず余白があり、そこに収まる */
+.about__cactus {
+  position: absolute; z-index: 1;
+  right: 0; bottom: 0;
+  width: clamp(90px, 11vw, 150px);
+  opacity: .38;
+  transform: rotate(6deg) translateY(34%);
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   5. RESERVATION
+   ============================================================ */
+.reserve { position: relative; overflow: hidden; background: var(--ink); }
+.reserve__kitchen {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: .34;
+}
+.reserve__inner {
+  position: relative; z-index: 2;
+  max-width: 640px; margin: 0 auto;
+  padding: clamp(4rem, 12vh, 7rem) var(--pad);
+  text-align: center;
+}
+.reserve__note {
+  margin: 0 0 1.8rem;
+  font-size: clamp(.85rem, 2.4vw, .98rem);
+  color: rgba(247, 241, 227, .82);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  font-family: var(--font-display);
+  font-size: clamp(.95rem, 2.8vw, 1.1rem);
+  line-height: 1;
+  padding: .95em 2.4em;
+  border-radius: 999px;
+  text-decoration: none;
+  background: var(--yellow); color: var(--ink);
+  box-shadow: 0 6px 0 var(--red-shade);
+  transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.btn:hover { transform: translateY(3px); box-shadow: 0 3px 0 var(--red-shade); background: #fff35a; }
+.btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--red-shade); }
+.btn--big { font-size: clamp(1.05rem, 3.4vw, 1.4rem); padding: 1.05em 2.9em; }
+
+
+/* ============================================================
+   6. INSTAGRAM
+   ============================================================ */
+.insta {
+  position: relative;
+  background: var(--red-deep);
+  padding: clamp(4rem, 13vh, 8rem) var(--pad) clamp(4rem, 12vh, 7rem);
+  text-align: center;
+  overflow: hidden;
+}
+.insta__head {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 10vw, 6rem);
+  line-height: .88;
+  margin: 0 0 1rem;
+  color: var(--yellow);
+  text-shadow: .04em .04em 0 var(--ink);
+}
+.insta__lead {
+  margin: 0 0 2.2rem;
+  font-size: clamp(.88rem, 2.5vw, 1.02rem);
+  color: rgba(247, 241, 227, .9);
+}
+.insta__cta {
+  display: inline-flex; align-items: center; gap: .55em;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 4vw, 1.7rem);
+  padding: .8em 1.9em;
+  border-radius: 999px;
+  text-decoration: none;
+  background: var(--yellow); color: var(--ink);
+  box-shadow: 0 7px 0 var(--red-shade);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.insta__cta:hover { transform: translateY(4px); box-shadow: 0 3px 0 var(--red-shade); }
+.insta__cta:active { transform: translateY(7px); box-shadow: 0 0 0 var(--red-shade); }
+
+
+/* ============================================================
+   フッター
+   ============================================================ */
+.foot {
+  background: var(--ink);
+  padding: clamp(2.5rem, 8vh, 4rem) var(--pad);
+  text-align: center;
+  font-size: .84rem;
+  line-height: 1.9;
+}
+.foot__mark { width: 52px; margin: 0 auto 1rem; border-radius: 50%; }
+.foot__name {
+  font-family: var(--font-display);
+  font-size: 1.35rem; margin: 0 0 .8rem; color: var(--yellow);
+}
+.foot__meta { margin: 0 0 1.2rem; color: rgba(247, 241, 227, .72); }
+.foot__links { margin: 0 0 1.5rem; display: flex; justify-content: center; gap: .8em; }
+.foot__links a { color: var(--yellow); text-underline-offset: 4px; }
+.foot__links span { color: rgba(247, 241, 227, .35); }
+.foot__copy { margin: 0; font-size: .72rem; letter-spacing: .1em; color: rgba(247, 241, 227, .4); }
+
+
+/* ============================================================
+   レスポンシブ
+   ============================================================ */
+/* 横に余裕がある画面では、タイポと写真を左右に振る */
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1.02fr .98fr;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    padding-bottom: clamp(3rem, 8vh, 5rem);
+  }
+  .hero__type { text-align: left; }
+  .hero__mark { margin-left: 0; }
+  .hero__photos { max-width: min(100%, 74svh); align-self: center; }
+}
+
+@media (max-width: 860px) {
+  .about__inner { grid-template-columns: 1fr; justify-items: center; }
+  .about__bubble { width: min(340px, 78%); }
+  .about__body { text-align: left; }
+}
+
+/* スマホでは写真のかたまりが右に寄るので、左下にサボテンを置いて釣り合わせる */
+@media (max-width: 899px) {
+  .hero__says {
+    display: flex; align-items: flex-end; gap: .35rem;
+    position: absolute; z-index: 3;
+    left: var(--pad);
+    bottom: clamp(3.2rem, 10vh, 5.5rem);
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 760px) {
+  :root { --sweep-unit: 1.55vw; }
+
+  .sweep__track { height: 300vh; height: 300svh; }
+
+  /* 縦画面では左右2列に敷き詰める。高さを決めて cover で埋め、
+     隙間から奥が見えすぎないようにする */
+  .food__item img { height: 100%; object-fit: cover; }
+
+  .food--l1 { left:  -9%; top: -3%; width: 64%; height: 36%; }
+  .food--l2 { left:  -7%; top: 31%; width: 60%; height: 36%; }
+  .food--l3 { left:  -5%; top: 65%; width: 62%; height: 38%; }
+  .food--r1 { right: -9%; top:  1%; width: 60%; height: 34%; }
+  .food--r2 { right: -7%; top: 35%; width: 62%; height: 36%; }
+  .food--r3 { right: -5%; top: 69%; width: 60%; height: 34%; }
+
+  .topbar__ig span { display: none; }
+  .topbar__ig { padding: .55em .7em; }
+}
+
+@media (max-width: 420px) {
+  .hero { padding-top: 4.5rem; }
+  .info dd { font-size: .92rem; }
+}
+
+
+/* ============================================================
+   動きを減らす設定：スクロール演出を静的なレイアウトに置き換える
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+
+  .sweep__track { height: auto; }
+  .sweep__stage { position: static; height: auto; }
+
+  .food {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .5rem;
+    padding: .5rem;
+  }
+  .food__item {
+    position: static;
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+  }
+  /* 縦画面用の敷き詰め指定（height:100% / cover）を打ち消す */
+  .food__item img { height: auto; object-fit: contain; }
+
+  .reveal { position: static; }
+  .reveal__bg { position: static; height: 46vh; }
+  .reveal__bg img { transform: none; opacity: 1; }
+  .reveal__panel {
+    position: static;
+    opacity: 1; transform: none;
+    padding: 3rem var(--pad);
+    background: var(--ink);
+  }
+  .reveal__panel::before { display: none; }
+}
