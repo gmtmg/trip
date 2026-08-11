@@ -191,10 +191,12 @@ a { color: inherit; }
    JS無効の環境ではこの指定自体が効かず、従来どおり表示される */
 .js .hero__mark,
 .js .hero__photos,
-.js .hero__says { opacity: 0; }
+.js .hero__says,
+.js .topbar__home img { opacity: 0; }
 
-.js .hero.is-ready .hero__mark,
-.js .hero.is-ready .hero__says { opacity: 1; transition: opacity .5s ease; }
+.js.first-view-ready .hero__mark,
+.js.first-view-ready .hero__says,
+.js.first-view-ready .topbar__home img { opacity: 1; transition: opacity .5s ease; }
 
 .hero__mark {
   width: clamp(58px, 9vw, 104px); height: auto;
@@ -269,7 +271,7 @@ a { color: inherit; }
    opacity を明示しておくのは保険。アニメーションが動かない環境でも
    写真が消えたままにならないようにする */
 .js .hero__photos { animation: none; }
-.js .hero.is-ready .hero__photos {
+.js.first-view-ready .hero__photos {
   opacity: 1;
   animation: rise .9s cubic-bezier(.2, .9, .3, 1) both;
 }

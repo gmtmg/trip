@@ -9,21 +9,28 @@
 
   var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* ヒーローの画像が揃ってから出す。
+  /* 最初の画面の画像が「描ける状態」になってから出す。
      揃う前に出すと、丸い写真の黒フチや alt テキストだけが
-     宙に浮いて見えてしまう（style.css の .js .hero__photos を参照） */
-  (function revealHeroWhenLoaded() {
+     宙に浮いて見えてしまう（style.css の .js .hero__photos を参照）。
+
+     ここで complete を見るだけでは不十分。complete はダウンロード完了を
+     指すだけで、デコードはまだ終わっていないことがある。
+     とくにリロード時はキャッシュから complete が即 true になるため、
+     デコード待ちの隙間がそのまま枠線として見えてしまう。
+     decode() はデコード完了まで待ってくれるので、そちらを使う */
+  (function revealFirstViewWhenPainted() {
     var hero = document.querySelector('.hero');
     if (!hero) return;
 
-    var imgs = Array.prototype.slice.call(hero.querySelectorAll('img'));
+    var imgs = Array.prototype.slice.call(
+      document.querySelectorAll('.topbar img, .hero img'));
     var waiting = imgs.length;
     var shown = false;
 
     function show() {
       if (shown) return;
       shown = true;
-      hero.classList.add('is-ready');
+      document.documentElement.classList.add('first-view-ready');
     }
 
     function oneDone() {
@@ -34,11 +41,14 @@
     if (!waiting) { show(); return; }
 
     imgs.forEach(function (img) {
-      if (img.complete) {
+      if (img.decode) {
+        /* 失敗しても止めない。1枚欠けたまま全部隠れる方が困る */
+        img.decode().then(oneDone, oneDone);
+      } else if (img.complete) {
         oneDone();
       } else {
         img.addEventListener('load', oneDone);
-        img.addEventListener('error', oneDone);   // 失敗しても止めない
+        img.addEventListener('error', oneDone);
       }
     });
 
