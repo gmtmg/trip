@@ -123,14 +123,25 @@
                 <dd>
                   〒550-0003<br>
                   大阪府大阪市西区京町堀2丁目3-4 202
-                  <a class="info__map" href="https://www.google.com/maps/search/?api=1&amp;query=TRIP%20Tacos%20%E5%A4%A7%E9%98%AA%E5%B8%82%E8%A5%BF%E5%8C%BA%E4%BA%AC%E7%94%BA%E5%A0%802-3-4" target="_blank" rel="noopener">MAP を開く</a>
                 </dd>
               </div>
               <div class="info__row">
                 <dt>TEL</dt>
-                <dd><a href="tel:0664858346">06-6485-8346</a></dd>
+                <dd>06-6485-8346</dd>
               </div>
             </dl>
+            <!-- 副次的な導線。2つ横並びにして、下の主ボタンと段を分ける -->
+            <div class="quick">
+              <a class="quick__btn" href="https://www.google.com/maps/search/?api=1&amp;query=TRIP%20Tacos%20%E5%A4%A7%E9%98%AA%E5%B8%82%E8%A5%BF%E5%8C%BA%E4%BA%AC%E7%94%BA%E5%A0%802-3-4" target="_blank" rel="noopener">
+                <svg class="quick__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#pin"/></svg>
+                <span>地図を開く</span>
+              </a>
+              <a class="quick__btn" href="tel:0664858346">
+                <svg class="quick__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#tel"/></svg>
+                <span>電話をかける</span>
+              </a>
+            </div>
+
             <div class="reveal__actions">
               <a class="btn btn--yellow" href="https://yoyaku.tabelog.com/yoyaku/smartphone/net_booking_form/index?rcd=27155347&amp;utm_source=ig&amp;utm_medium=social&amp;utm_content=link_in_bio&amp;fbclid=PAdGRleASFFjxleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAadVeL7wCjR5ECi9vT-h-mm7-gguXQdimPEVpnPkMVwVL5CkrwmGUzNiCnyuBQ_aem_BgXxcqTD4-bKdtQTn5_pJg" target="_blank" rel="noopener">予約する</a>
               <a class="btn btn--ig" href="https://www.instagram.com/trip_tacos/" target="_blank" rel="noopener">
@@ -222,10 +233,16 @@
   <p class="foot__copy">&copy; TRIP Tacos</p>
 </footer>
 
-<!-- インスタアイコンの共有定義 -->
+<!-- アイコンの共有定義 -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <symbol id="ig" viewBox="0 0 24 24">
     <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 6.16a3.68 3.68 0 1 0 0 7.36 3.68 3.68 0 0 0 0-7.36Zm0 6.07a2.39 2.39 0 1 1 0-4.78 2.39 2.39 0 0 1 0 4.78Zm4.69-6.22a.86.86 0 1 1-1.72 0 .86.86 0 0 1 1.72 0Z"/>
+  </symbol>
+  <symbol id="pin" viewBox="0 0 24 24">
+    <path d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/>
+  </symbol>
+  <symbol id="tel" viewBox="0 0 24 24">
+    <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.28-.28.68-.36 1.03-.25 1.13.37 2.35.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.4 21 3 13.6 3 4.5c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.75-.25 1.03l-2.22 2.2Z"/>
   </symbol>
 </svg>
 

@@ -131,9 +131,10 @@ a { color: inherit; }
   background: var(--yellow);
 }
 
-/* スクロール位置の目印。表示はしない */
+/* スクロール位置の目印。表示はしない。
+   写真が捌けきった後の「溜め」の中に着地させる */
 .sweep__anchor {
-  position: absolute; top: 67%; left: 0;
+  position: absolute; top: 60%; left: 0;
   width: 1px; height: 1px;
 }
 .topbar.is-stuck {
@@ -357,8 +358,9 @@ a { color: inherit; }
    2. PHOTO → 店内 + INFO（スクロールで左右に捌ける）
    ============================================================ */
 /* stage と同じ svh 基準にしておく。iOS でアドレスバーが伸縮しても
-   進捗の分母が変わらず、写真が飛ばない */
-.sweep__track { position: relative; height: 340vh; height: 340svh; }
+   進捗の分母が変わらず、写真が飛ばない。
+   高さのうち後半は、INFO を読ませるための「溜め」に使う（script.js 参照） */
+.sweep__track { position: relative; height: 430vh; height: 430svh; }
 
 .sweep__stage {
   position: sticky; top: 0;
@@ -429,14 +431,35 @@ a { color: inherit; }
   line-height: 1.7;
   font-weight: 700;
 }
-.info a { color: var(--cream); }
-.info__map {
-  display: block; width: fit-content;
-  margin: .45rem auto 0;
-  font-size: .8rem; letter-spacing: .08em;
-  color: var(--yellow);
-  text-underline-offset: 4px;
+
+/* 地図・電話は「調べる」系の副次的な導線。
+   輪郭だけの控えめな見た目にして2つ横並びにし、
+   下の塗りつぶしボタン（予約・Instagram）と段を分ける。
+   4つ縦に並べると、どれが主役か分からなくなるため */
+.quick {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: .55rem;
+  margin: .4rem 0 1.5rem;
 }
+.quick__btn {
+  display: inline-flex; align-items: center; gap: .45em;
+  padding: .6em 1.1em;
+  border: 2px solid rgba(247, 241, 227, .45);
+  border-radius: 999px;
+  font-size: clamp(.78rem, 2.4vw, .86rem);
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--cream);
+  text-decoration: none;
+  background: rgba(20, 13, 10, .35);
+  transition: border-color .18s ease, background-color .18s ease, color .18s ease;
+}
+.quick__btn:hover {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--ink);
+}
+.quick__icon { width: 1.15em; height: 1.15em; fill: currentColor; flex: none; }
 
 .reveal__actions {
   display: flex; flex-direction: column; align-items: center;
@@ -496,7 +519,15 @@ a { color: inherit; }
   fill: var(--yellow);
 }
 
-.about__body p { margin: 0 0 1.1rem; font-size: clamp(.92rem, 2.5vw, 1.02rem); }
+.about__body p {
+  margin: 0 0 1.1rem;
+  font-size: clamp(.92rem, 2.5vw, 1.02rem);
+  /* 日本語を文節の切れ目で折り返す。
+     「大阪市西区京町堀に待望の / 店舗オープン」のように読みやすく割れる。
+     未対応ブラウザでは従来どおりの折り返しになるだけ */
+  word-break: auto-phrase;
+  text-wrap: pretty;
+}
 .about__body p:last-child { margin-bottom: 0; }
 .about__sign {
   font-family: var(--font-display);
@@ -601,12 +632,15 @@ a { color: inherit; }
   padding: .8em 1.9em;
   border-radius: 999px;
   text-decoration: none;
-  background: var(--yellow); color: var(--ink);
-  box-shadow: 0 7px 0 var(--red-shade);
-  transition: transform .16s ease, box-shadow .16s ease;
+  background: var(--ig-grad); color: #fff;
+  /* 背景の赤にグラデのピンク〜オレンジが溶けるので、
+     クリーム色の縁を回して輪郭を立てる */
+  border: 3px solid var(--cream);
+  box-shadow: 0 7px 0 var(--ig-shade);
+  transition: filter .16s ease, transform .16s ease, box-shadow .16s ease;
 }
-.insta__cta:hover { transform: translateY(4px); box-shadow: 0 3px 0 var(--red-shade); }
-.insta__cta:active { transform: translateY(7px); box-shadow: 0 0 0 var(--red-shade); }
+.insta__cta:hover { filter: brightness(1.12); transform: translateY(4px); box-shadow: 0 3px 0 var(--ig-shade); }
+.insta__cta:active { transform: translateY(7px); box-shadow: 0 0 0 var(--ig-shade); }
 
 
 /* ============================================================
@@ -668,7 +702,7 @@ a { color: inherit; }
 @media (max-width: 760px) {
   :root { --sweep-unit: 1.55vw; }
 
-  .sweep__track { height: 300vh; height: 300svh; }
+  .sweep__track { height: 380vh; height: 380svh; }
 
   /* 縦画面では左右2列に敷き詰める。高さを決めて cover で埋め、
      隙間から奥が見えすぎないようにする */

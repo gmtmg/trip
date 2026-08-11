@@ -66,10 +66,15 @@
     var top = track.getBoundingClientRect().top;
     var raw = clamp(-top / span);
 
-    /* 情報パネルは写真がある程度捌けてから出す */
-    var info = clamp((raw - 0.42) / 0.32);
+    /* 写真が捌けきるのは全体の 55% の地点。
+       残りの 45% は INFO を出したまま留まる「溜め」に使う。
+       これが無いと、写真が流れた勢いのまま下へ素通りしてしまう */
+    var sweep = clamp(raw / 0.55);
 
-    stage.style.setProperty('--p', smoothstep(raw).toFixed(4));
+    /* 情報パネルは写真がある程度捌けてから出す */
+    var info = clamp((raw - 0.28) / 0.22);
+
+    stage.style.setProperty('--p', smoothstep(sweep).toFixed(4));
     stage.style.setProperty('--pi', smoothstep(info).toFixed(4));
 
     /* 情報パネルが十分出てからリンクを押せるようにする */
