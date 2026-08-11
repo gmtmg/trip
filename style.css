@@ -710,6 +710,13 @@ a { color: inherit; }
   .about__body { text-align: left; }
 }
 
+@media (max-width: 899px) {
+  /* 縦画面では横長の店内写真が大きく切り取られる。
+     中央だとボトル棚だけになるので、右端を軸にして
+     ネオンのある側が残るようにする */
+  .reveal__bg img { object-position: 100% 50%; }
+}
+
 /* スマホでは写真のかたまりが右に寄るので、左下にサボテンを置いて釣り合わせる */
 @media (max-width: 899px) {
   .hero__says {
