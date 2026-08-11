@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OGP画像の版面</title>
+<!--
+  SNSに貼ったときのサムネイル(og:image)の元版。
+  1200x630 ちょうどで描画し、tools/build-og.sh がこれを撮影して
+  assets/web/og.jpg を作る。文言や配置を変えたらスクリプトを再実行すること。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
+<style>
+  :root {
+    --red:    #DE2A24;
+    --yellow: #EDE631;
+    --ink:    #140D0A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+
+  body {
+    background: var(--yellow);
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 28px;
+    padding: 44px 56px;
+  }
+
+  /* ---- 左：ロゴタイプ ---- */
+  .type { display: flex; flex-direction: column; height: 100%; }
+
+  .mark {
+    width: 74px; height: 70px;
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    margin-bottom: 14px;
+  }
+
+  .kicker {
+    font-weight: 900;
+    font-size: 17px;
+    letter-spacing: .2em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .kicker i { font-style: normal; color: var(--red); margin: 0 .35em; }
+
+  .title {
+    font-family: "Bagel Fat One", sans-serif;
+    font-weight: 400;
+    font-size: 106px;
+    line-height: .82;
+    color: var(--red);
+    text-shadow:
+       .055em .055em 0 var(--ink),
+      -.006em -.006em 0 var(--ink),
+       .012em 0 0 var(--ink);
+  }
+  .title span { display: block; }
+
+  .place {
+    margin-top: 16px;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: .07em;
+    color: var(--ink);
+  }
+  .place i { font-style: normal; color: var(--red); margin: 0 .4em; }
+
+  /* 左下のサボテン */
+  .cactus {
+    width: 132px;
+    margin-top: auto;
+    margin-left: -6px;
+    transform: rotate(-5deg);
+    align-self: flex-start;
+  }
+
+  /* ---- 右：料理3点 ---- */
+  /* 盛り合わせは元画像の時点で右端が切れている。
+     版面の外まではみ出させ、切れ目を枠の外に逃がす（本編と同じ考え方） */
+  .dishes {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    aspect-ratio: 1 / .98;
+    justify-self: end;
+    margin-right: -120px;
+  }
+  .dishes figure { position: absolute; margin: 0; }
+  .dishes img { width: 100%; height: auto; filter: drop-shadow(0 12px 22px rgba(20,13,10,.34)); }
+
+  .d-sub    { left: 0;   top: 0;    width: 43%; z-index: 2; transform: rotate(-9deg); }
+  /* はみ出した分を見込んだ位置。ここを詰めると枠に欠かれる */
+  .d-nachos { right: 24%; top: 11%; width: 31%; z-index: 1; transform: rotate(8deg); }
+  .d-main   { left: 4%;  bottom: 0; width: 92%; z-index: 3; transform: rotate(-2deg); }
+
+  /* 丸い2点は切り抜き画像ではないので、円に抜いて皿として見せる（本編と同じ扱い） */
+  .d-sub img, .d-nachos img {
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid var(--ink);
+  }
+</style>
+</head>
+<body>
+
+  <div class="type">
+    <img class="mark" src="../assets/web/logo.webp" alt="">
+    <p class="kicker">タコス居酒屋 <i>&#9670;</i> TACOS &amp; TEQUILA</p>
+    <h1 class="title"><span>TRIP</span><span>TACOS</span></h1>
+    <p class="place">大阪市西区 京町堀 <i>/</i> KYOMACHIBORI, OSAKA</p>
+    <img class="cactus" src="../assets/web/cactus.webp" alt="">
+  </div>
+
+  <div class="dishes">
+    <figure class="d-sub"><img src="../assets/web/tacos-red.webp" alt=""></figure>
+    <figure class="d-nachos"><img src="../assets/web/nachos.webp" alt=""></figure>
+    <figure class="d-main"><img src="../assets/web/hero-tacos.webp" alt=""></figure>
+  </div>
+
+</body>
+</html>

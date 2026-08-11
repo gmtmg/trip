@@ -71,10 +71,10 @@ done <<EOF
 $JOBS
 EOF
 
-# OGP画像はクローラ互換のためJPEGのまま(1200x630を維持)
-sips -s format jpeg -s formatOptions 82 "$SRC/og-trip-tacos.png" --out "$OUT/og.jpg" \
-  >/dev/null </dev/null
-printf '  %-13s %19s -> %7s  OK\n' "og.jpg" "" "$(du -h "$OUT/og.jpg" | cut -f1)"
+# NOTE: SNS用サムネイル assets/web/og.jpg はここでは作らない。
+#       tools/og-image.html を撮影して作るので tools/build-og.sh を使うこと。
+#       （以前ここで元画像から生成していたため、実行するたびに
+#         せっかく作ったサムネイルが上書きされてしまっていた）
 
 echo
 echo "合計: $(du -sh "$OUT" | cut -f1)"
