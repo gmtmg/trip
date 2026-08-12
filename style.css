@@ -15,8 +15,11 @@
   --ink:        #140D0A;
   --cream:      #F7F1E3;
 
-  --font-display: "Bagel Fat One", "Zen Kaku Gothic New", system-ui, sans-serif;
-  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  /* 見出しの Bagel Fat One に合わせ、本文も丸ゴシックで揃える。
+     Hiragino Maru Gothic ProN は Mac / iPhone に入っている丸ゴシックなので、
+     Webフォントが届く前もほぼ同じ形で表示される */
+  --font-display: "Bagel Fat One", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", system-ui, sans-serif;
+  --font-body: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Zen Maru Gothic", system-ui, sans-serif;
 
   --pad: clamp(1.25rem, 5vw, 4rem);
   --sweep-unit: 1vw;   /* 料理写真が捌ける距離の単位。モバイルで拡大する */
